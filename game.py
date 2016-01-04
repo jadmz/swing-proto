@@ -1,20 +1,23 @@
-import pygame, sys
-from pygame.locals import *
+import pygame_sdl2, sys
+
+from pygame_sdl2.locals import *
 from player import Player
+from Box2D import (b2World, b2AABB)
 
 class Game:
     FRAMES_PER_SECOND = 30
     
     def __init__(self):
-        pygame.init()
-        pygame.key.set_repeat(1, 10)
-        self.windowSurface = pygame.display.set_mode((500, 400), 0, 32)
+        pygame_sdl2.init()
+        pygame_sdl2.key.set_repeat(1, 10)
+        self.windowSurface = pygame_sdl2.display.set_mode((500, 400), 0, 32)
         
-        pygame.display.set_caption('Swing Proto')
-        clock = pygame.time.Clock()
+        pygame_sdl2.display.set_caption('Swing Proto')
+        clock = pygame_sdl2.time.Clock()
         clock.tick(self.FRAMES_PER_SECOND)
         self.running = False
-        self.player = Player()
+        self.world = b2World(gravity=(0, -10), doSleep=True)
+        self.player = Player(self.world)
 
 
     def run(self):
@@ -24,7 +27,7 @@ class Game:
             
     
     def loop(self):
-        events = pygame.event.get()
+        events = pygame_sdl2.event.get()
         self.processEvents(events)
         self.update(events)
         self.render()
@@ -32,7 +35,7 @@ class Game:
     def processEvents(self, events):
         for event in events:
             if event.type == QUIT:
-                pygame.quit()
+                pygame_sdl2.quit()
                 sys.exit()
 
     def update(self, events):
@@ -41,5 +44,5 @@ class Game:
     def render(self):
         self.windowSurface.fill((255,255,255))
         self.player.render(self.windowSurface)
-        pygame.display.flip()
+        pygame_sdl2.display.flip()
 
